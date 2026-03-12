@@ -1,208 +1,184 @@
 # Responsible AI Risk Assessment Tool
 
+Prototype decision-support tool for early-phase Responsible AI risk and compliance assessment, developed as part of a Bachelor's thesis at Häme University of Applied Sciences (HAMK).
+
 ## Overview
 
-This repository contains a prototype **Responsible AI Risk Assessment Tool** developed as part of a **Bachelor's thesis** in the Degree Programme in Computer Applications at Häme University of Applied Sciences (HAMK).
+This project is a proof-of-concept web application for structuring early-phase AI governance assessments. Users describe an AI use case through a guided Streamlit form, after which the tool:
 
-The tool supports the **early-stage assessment of AI systems** by identifying potential governance risks and compliance considerations related to responsible AI development. It combines:
+- evaluates governance signals with explicit rule-based logic
+- analyzes the free-text description with a lightweight ML classifier
+- combines both signals into a final hybrid attention result
+- produces explanations, domain-level risk signals, compliance flags, recommended actions, and a downloadable JSON record
 
-- a **rule-based governance assessment module**
-- a **lightweight machine learning classifier**
-- a **web-based user interface implemented with Streamlit**
+The prototype is designed to support reflection, consistency, and traceability in early AI project planning. It is **not** a legal compliance automation system and should not be used as legal advice or as a substitute for formal review.
 
-The objective of the prototype is to demonstrate how structured input parameters and automated analysis can support the **initial evaluation of AI use cases from a Responsible AI perspective**.
+## What the application assesses
 
-> **Note:**  
-> This tool is a research prototype developed for academic purposes. It should not be used as a substitute for formal regulatory or legal assessments.
+The interface collects structured input across five sections:
 
-## Features
+1. **Use case basics**
+2. **Decision & impact characteristics**
+3. **Data & privacy signals**
+4. **System & governance signals**
+5. **Responsible AI & documentation signals**
 
-The prototype provides the following functionality:
+From these inputs, the rules engine builds a domain risk profile covering:
 
-- Structured input form for describing an AI use case
-- Rule-based evaluation of governance signals
-- Domain-level Responsible AI risk profile
-- Identification of potential compliance signals
-- Machine learning–assisted risk classification
-- Explanations of detected risks
-- Suggested governance actions
+- Privacy & Data Protection
+- Fairness & Non-discrimination
+- Transparency & Explainability
+- Human Oversight & Accountability
+- Security & Misuse
 
-The tool focuses on common Responsible AI dimensions, including:
+## Assessment outputs
 
-- Privacy and data protection  
-- Fairness and bias  
-- Transparency and explainability  
-- Accountability and governance  
-- Security and misuse risks  
+The application produces:
 
-## Repository Structure
+- an overall rules-based attention level
+- an assessment readiness status:
+  - `Ready`
+  - `Provisional`
+  - `Insufficient information`
+- a domain risk profile with plain-language reasons
+- flagged risk categories
+- indicative compliance signals
+- recommended governance actions
+- an optional ML supporting signal from the use-case description
+- a final hybrid attention decision
+- an exportable JSON assessment record
+
+### Hybrid decision logic
+
+The rules engine is the primary decision mechanism.
+
+The ML classifier may **escalate** the final attention level only when:
+
+- the rules-based readiness status is `Ready`
+- the ML-predicted level is higher than the rules-based level
+- the ML confidence is at least `0.75`
+
+Otherwise, the rules-based result remains unchanged.
+
+## Repository structure
 
 ```text
 responsible-ai-risk-assessment-tool/
-│
-├── app.py                # Main Streamlit application & GUI
-├── requirements.txt      # Project dependencies
-├── README.md             # Project documentation
-├── LICENSE               # License information
-├── .gitignore            # Files excluded from version control
-│
+├── app.py
+├── requirements.txt
+├── README.md
+├── LICENSE
 ├── data/
-│   ├── generate_training_data.py  # Script for synthetic data generation
-│   └── training_data.csv          # Dataset for model training
-│
+│   ├── generate_training_data.py
+│   └── training_data.csv
 ├── ml/
-│   ├── text_classifier.py         # ML classification logic
-│   ├── model.joblib               # Pre-trained model file
-│   └── metrics.json               # Model evaluation metrics
-│
+│   ├── text_classifier.py
+│   ├── model.joblib
+│   └── metrics.json
 └── rules/
-    └── risk_rules.py              # Rule-based governance logic
+    └── risk_rules.py
 ```
 
-### Main Components
+## Tech stack
 
-**app.py**  
-Main Streamlit application providing the graphical user interface and orchestrating the assessment workflow.
+- Python
+- Streamlit
+- pandas
+- numpy
+- scikit-learn
+- joblib
 
-**rules/risk_rules.py**  
-Contains the rule-based governance logic used to evaluate structured input parameters and generate risk signals.
+## Installation
 
-**ml/text_classifier.py**  
-Implements the machine learning classifier used to categorize AI use cases based on textual descriptions.
-
-**data/generate_training_data.py**  
-Script used to generate synthetic training data for the classifier.
-
-**data/training_data.csv**  
-Dataset used for training the machine learning model.
-
-**ml/model.joblib**  
-Pre-trained machine learning model used by the application.
-
-**ml/metrics.json**  
-Evaluation metrics of the trained model.
-
-## Setup and Installation
-
-The following steps describe how to install and run the Responsible AI Risk Assessment Tool locally.
-
-## 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/BachLeno/responsible-ai-risk-assessment-tool.git  
+git clone https://github.com/BachLeno/responsible-ai-risk-assessment-tool.git
 cd responsible-ai-risk-assessment-tool
 ```
 
-## 2. Create a Virtual Environment
+### 2. Create and activate a virtual environment
 
-It is recommended to use a Python virtual environment to manage project dependencies and avoid conflicts with other Python installations.
-
-### Windows
+**Windows**
 
 ```bash
-python -m venv venv  
-venv\Scripts\activate  
+python -m venv venv
+venv\Scripts\activate
 ```
 
-### macOS / Linux
+**macOS / Linux**
 
 ```bash
-python3 -m venv venv  
-source venv/bin/activate  
+python3 -m venv venv
+source venv/bin/activate
 ```
 
-After activation, the terminal prompt should show the name of the virtual environment (for example `(venv)`).
-
-## 3. Install Dependencies
-
-Install the required Python libraries using the provided `requirements.txt` file.
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-This will install all necessary packages, including:
-
-- Streamlit  
-- pandas  
-- numpy  
-- scikit-learn  
-- joblib  
-
-## Running the Application
-
-The tool is implemented using **Streamlit**.
-
-Start the application by running:
+## Run the application
 
 ```bash
 streamlit run app.py
 ```
 
-Streamlit will start a local development server and automatically open the application in your default web browser.
+By default, Streamlit serves the app locally at:
 
-If the browser does not open automatically, the application can usually be accessed at:
-
+```text
 http://localhost:8501
+```
 
-The interface allows users to enter information about an AI system and generate a structured governance risk assessment.
+## Machine learning workflow
 
-## Machine Learning Component
+The repository includes a pre-trained model in `ml/model.joblib`, so the app can run without retraining.
 
-The repository includes a **pre-trained model** (`ml/model.joblib`) so the application can run immediately after installation.
-
-The machine learning component is used to support the classification of AI use cases based on textual descriptions.
-
-## Optional: Retraining the Machine Learning Model
-
-If desired, the training dataset and model can be regenerated.
-
-### Generate Synthetic Training Data
+### Generate synthetic training data
 
 ```bash
 python data/generate_training_data.py
 ```
 
-### Train the Classifier
+### Train and evaluate the classifier
 
 ```bash
-python ml/text_classifier.py
+python -m ml.text_classifier train-eval
 ```
 
-After training, the following files will be generated:
+### Other available CLI commands
 
 ```bash
-ml/model.joblib  
-ml/metrics.json  
+python -m ml.text_classifier train
+python -m ml.text_classifier eval
 ```
 
-These files are used by the application to perform the text-based risk classification.
+The training/evaluation workflow updates:
 
-## Methodological Notes
+- `ml/model.joblib`
+- `ml/metrics.json`
 
-The machine learning model is trained using **synthetic training data generated specifically for this prototype**.
+## Methodology notes
 
-Therefore, the ML classifier should be interpreted as a **supporting signal rather than a production-grade risk prediction model**.
-
-The rule-based logic remains the primary mechanism for identifying governance risks.
+- The ML component uses TF-IDF features with logistic regression.
+- The classifier predicts one of three labels: `Low`, `Medium`, or `High`.
+- The training data is synthetic and intended for prototype demonstration only.
+- The rules engine remains the primary governance assessment mechanism.
 
 ## Limitations
 
-This prototype has several limitations:
+- This is a prototype, not a production governance platform.
+- The rule logic is intentionally simplified.
+- The ML model is trained on synthetic examples rather than real organizational cases.
+- Results are indicative and should be reviewed by human stakeholders.
+- The thesis evaluation used a limited scenario-based comparison rather than real-world deployment testing.
 
-- The rule-based assessment logic is simplified
-- The machine learning model is trained on synthetic data
-- The tool has not been validated in real organizational environments
-- The results should be interpreted as **decision-support guidance rather than formal compliance evaluation**
+## Thesis context
 
-## Technologies Used
+This repository supports the Bachelor's thesis **Support Tool for Assessing Responsible AI Risk and Compliance**.
 
-- Python  
-- Streamlit  
-- pandas  
-- numpy  
-- scikit-learn  
-- joblib
+The thesis describes a prototype that combines rule-based assessment logic with a lightweight machine learning component, implemented as a Streamlit web application and evaluated using three constructed scenarios. The goal is to support structured early-phase AI risk and compliance assessment rather than automate formal compliance decisions.
 
 ## Author
 
@@ -213,4 +189,4 @@ Häme University of Applied Sciences (HAMK)
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See `LICENSE` for details.

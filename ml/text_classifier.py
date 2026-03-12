@@ -128,7 +128,7 @@ def evaluate_model(
 
     metrics: Dict[str, Any] = {
         "data": {
-            "train_csv_path": str(train_csv_path),
+            "train_csv_path": "data/training_data.csv",
             "rows_total": len(X),
             "test_size": test_size,
             "random_state": random_state,
